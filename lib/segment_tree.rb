@@ -1,11 +1,10 @@
 require "forwardable"
-require "segment_tree/version"
 
 class SegmentTree
   # An abstract tree node
   class Node #:nodoc:all:
     extend Forwardable
-    def_delegators :@range, :cover?, :begin, :end
+    def_delegators :@range, :include?, :begin, :end
   end
 
   # An elementary intervals or nodes container
@@ -24,14 +23,14 @@ class SegmentTree
     # Find all intervals containing point +x+ within node's children. Returns array
     def find(x)
       [@left, @right].compact.
-                      select { |node| node.cover?(x) }.
+                      select { |node| node.include?(x) }.
                       map    { |node| node.find(x) }.
                       flatten
     end
 
     # Find first interval containing point +x+ within node's children
     def find_first(x)
-      subset = [@left, @right].compact.find { |node| node.cover?(x) }
+      subset = [@left, @right].compact.find { |node| node.include?(x) }
       subset && subset.find_first(x)
     end
 
@@ -56,7 +55,7 @@ class SegmentTree
     end
 
     def find_first(x)
-      cover?(x) ? self : nil
+      include?(x) ? self : nil
     end
   end
 

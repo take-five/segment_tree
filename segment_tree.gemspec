@@ -8,8 +8,8 @@ Gem::Specification.new do |gem|
   gem.summary       = %q{Tree data structure for storing segments. It allows querying which of the stored segments contain a given point.}
   gem.homepage      = "https://github.com/take-five/segment_tree"
 
-  gem.files         = `git ls-files`.split($\)
-  gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
+  gem.files         = `git ls-files`.split($\).grep(/lib|spec/)
+  gem.test_files    = gem.files.grep(/spec/)
   gem.name          = "segment_tree"
   gem.require_paths = %W(lib)
   gem.version       = SegmentTree::VERSION

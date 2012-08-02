@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+require "rubygems"
 require "bundler/setup"
 require "benchmark"
 require "segment_tree"
@@ -42,6 +43,6 @@ Benchmark.bmbm do |x|
   tests.each do |n|
     data = lists[n]
 
-    x.report(n.to_s) { data.find { |range, _| range.cover?(rand(n)) } }
+    x.report(n.to_s) { data.find { |range, _| range.include?(rand(n)) } }
   end
 end

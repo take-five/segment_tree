@@ -67,7 +67,6 @@ ip_tree.find_first(client_ip).value # => {:city=>"YEKT"}
 ## TODO
 1. Fix README typos and grammatical errors (english speaking contributors are welcomed)
 2. Implement C binding for MRI.
-3. Test on different versions of Ruby.
 
 ## LICENSE
 Copyright (c) 2012 Alexei Mikhailov
