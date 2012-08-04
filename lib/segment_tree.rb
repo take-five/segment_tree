@@ -1,23 +1,45 @@
-require "forwardable"
-
+# == Synopsys
+# Segment tree is a tree data structure for storing intervals, or segments.
+# It allows querying which of the stored segments contain a given point.
+# It is, in principle, a static structure; that is, its content cannot be modified once the structure is built.
+#
+# == Example
+#   data = [
+#     [IPAddr.new('87.224.241.0/24').to_range, {:city => "YEKT"}],
+#     [IPAddr.new('195.58.18.0/24').to_range, {:city => "MSK"}]
+#     # and so on
+#   ]
+#   ip_tree = SegmentTree.new(data)
+#
+#   client_ip = IPAddr.new("87.224.241.66")
+#   ip_tree.find_first(client_ip).value # => {:city=>"YEKT"}
 class SegmentTree
   # An abstract tree node
   class Node #:nodoc:all:
-    extend Forwardable
-    def_delegators :@range, :include?, :begin, :end
+    attr_reader :begin, :end
+
+    def initialize(*)
+      @begin, @end = @range.begin, @range.end
+    end
+    protected :initialize
+
+    def include?(x)
+      @range.include?(x)
+    end
   end
 
   # An elementary intervals or nodes container
   class Container < Node #:nodoc:all:
     extend Forwardable
 
-    attr_reader :left, :right
+    #attr_reader :left, :right
 
     # Node constructor, accepts both +Node+ and +Segment+
     def initialize(left, right)
       @left, @right = left, right
-
       @range = left.begin..(right || left).end
+
+      super
     end
 
     # Find all intervals containing point +x+ within node's children. Returns array
@@ -48,6 +70,7 @@ class SegmentTree
       raise ArgumentError, 'Range expected, %s given' % range.class.name unless range.is_a?(Range)
 
       @range, @value = range, value
+      super
     end
 
     def find(x)
@@ -55,7 +78,7 @@ class SegmentTree
     end
 
     def find_first(x)
-      include?(x) ? self : nil
+      @range.include?(x) ? self : nil
     end
   end
 

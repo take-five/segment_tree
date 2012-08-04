@@ -4,3 +4,4 @@ source 'https://rubygems.org'
 gemspec
 
 gem "simplecov", "~> 0.6.4"
+gem "ruby-prof"
