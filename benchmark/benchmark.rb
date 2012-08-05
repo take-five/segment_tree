@@ -9,7 +9,7 @@ def tree(n)
   SegmentTree.new list(n)
 end
 def list(n)
-  (0..n).map { |num| [(num * 10)..(num + 1) * 10 - 1, num] }
+  (0..n).map { |num| [num * 10..(num + 1) * 10 - 1, num] }
 end
 
 puts "Pregenerating data..."
@@ -28,12 +28,13 @@ Benchmark.bmbm do |x|
   end
 end
 
+puts
 puts "Finding matching interval in tree of N intervals"
 Benchmark.bmbm do |x|
   tests.each do |n|
     t = trees[n]
 
-    x.report(n.to_s) { t.find_first(rand(n)) }
+    x.report(n.to_s) { t.find(rand(n)) }
   end
 end
 

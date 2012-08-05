@@ -12,73 +12,24 @@
 #   ip_tree = SegmentTree.new(data)
 #
 #   client_ip = IPAddr.new("87.224.241.66")
-#   ip_tree.find_first(client_ip).value # => {:city=>"YEKT"}
+#   ip_tree.find(client_ip).value # => {:city=>"YEKT"}
 class SegmentTree
-  # An abstract tree node
-  class Node #:nodoc:all:
-    attr_reader :begin, :end
-
-    def initialize(*)
-      @begin, @end = @range.begin, @range.end
-    end
-    protected :initialize
-
-    def include?(x)
-      @range.include?(x)
-    end
-  end
-
-  # An elementary intervals or nodes container
-  class Container < Node #:nodoc:all:
-    extend Forwardable
-
-    #attr_reader :left, :right
-
-    # Node constructor, accepts both +Node+ and +Segment+
-    def initialize(left, right)
-      @left, @right = left, right
-      @range = left.begin..(right || left).end
-
-      super
-    end
-
-    # Find all intervals containing point +x+ within node's children. Returns array
-    def find(x)
-      [@left, @right].compact.
-                      select { |node| node.include?(x) }.
-                      map    { |node| node.find(x) }.
-                      flatten
-    end
-
-    # Find first interval containing point +x+ within node's children
-    def find_first(x)
-      subset = [@left, @right].compact.find { |node| node.include?(x) }
-      subset && subset.find_first(x)
-    end
-
-    # Do not expose left and right, otherwise output shall be too long on large trees
-    def inspect
-      "#<#{self.class.name}:0x#{object_id.to_s(16)} @range=#{@range.inspect}>"
-    end
-  end
-
   # An elementary interval
-  class Segment < Node #:nodoc:all:
-    attr_reader :value
+  class Segment #:nodoc:all:
+    attr_reader :range, :value
 
     def initialize(range, value)
       raise ArgumentError, 'Range expected, %s given' % range.class.name unless range.is_a?(Range)
 
       @range, @value = range, value
-      super
     end
 
-    def find(x)
-      [find_first(x)].compact
-    end
-
-    def find_first(x)
-      @range.include?(x) ? self : nil
+    # segments are sorted from left to right, from shortest to longest
+    def <=>(other)
+      case cmp = @range.begin <=> other.range.begin
+        when 0 then @range.end <=> other.range.end
+        else cmp
+      end
     end
   end
 
@@ -90,37 +41,60 @@ class SegmentTree
   # 2. 2-dimensional array - an array of arrays where first element of
   #    each element is range, and second is value:
   #    <code>[[(0..3), some_value1], [(4..6), some_value2] ...]<code>
-  def initialize(data)
+  #
+  # You can pass optional argument +sorted+.
+  # If +sorted+ is true then tree consider that data already sorted in proper order.
+  # Use it at your own risk!
+  def initialize(data, sorted = false)
     # build elementary segments
-    nodes = case data
+    @segments = case data
       when Hash, Array, Enumerable then
         data.collect { |range, value| Segment.new(range, value) }
       else raise ArgumentError, '2-dim Array or Hash expected'
-    end.sort! do |x, y|
-      # intervals are sorted from left to right, from shortest to longest
-      x.begin == y.begin ?
-          x.end <=> y.end :
-          x.begin <=> y.begin
     end
 
-    # now build binary tree
-    while nodes.length > 1
-      nodes = nodes.each_slice(2).collect { |left, right| Container.new(left, right) }
-    end
-
-    # root node is first node or nil when tree is empty
-    @root = nodes.first
-  end
-
-  # Find all intervals containing point +x+
-  # @return [Array]
-  def find(x)
-    @root ? @root.find(x) : []
+    @segments.sort! unless sorted
   end
 
   # Find first interval containing point +x+.
   # @return [Segment|NilClass]
-  def find_first(x)
-    @root && @root.find_first(x)
+  def find(x)
+    return nil if x.nil?
+    low = 0
+    high = @segments.size - 1
+    while low <= high
+      mid = (low + high) / 2
+
+      case matches?(x, low, high, mid)
+        when -1 then high = mid - 1
+        when 1 then low = mid + 1
+        when 0 then return @segments[mid]
+        else return nil
+      end
+    end
+    nil
+  end
+
+  def inspect
+    if @segments.size > 0
+      "SegmentTree(#{@segments.first.range.begin}..#{@segments.last.range.end})"
+    else
+      "SegmentTree(empty)"
+    end
+  end
+
+  private
+  def matches?(x, low_idx, high_idx, idx) #:nodoc:
+    low, high = @segments[low_idx], @segments[high_idx]
+    segment   = @segments[idx]
+    left      = idx > 0 && @segments[idx - 1]
+    right     = idx < @segments.size - 1 && @segments[idx + 1]
+
+    case
+      when left && (low.range.begin..left.range.end).include?(x) then -1
+      when segment.range.include?(x) then 0
+      when right && (right.range.begin..high.range.end).include?(x) then 1
+      else nil
+    end
   end
 end

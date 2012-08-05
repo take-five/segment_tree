@@ -3,10 +3,11 @@
 Ruby implementation of [segment tree](http://en.wikipedia.org/wiki/Segment_tree) data structure.
 Segment tree is a tree data structure for storing intervals, or segments. It allows querying which of the stored segments contain a given point. It is, in principle, a static structure; that is, its content cannot be modified once the structure is built.
 
-Segment tree storage has the complexity of <tt>O(n log n)</tt>.
-Segment tree querying has the complexity of <tt>O(log n + k)</tt> where <tt>k</tt> is the number of reported intervals.
+Segment tree storage has the complexity of <tt>O(n)</tt>.
+Segment tree querying has the complexity of <tt>O(log n)</tt>.
 
 It's pretty fast on querying trees with ~ 10 millions segments, though building of such big tree will take long.
+Internally it is not a tree - it is just a sorted array, and querying the tree is just a simple binary search (it was implemented as real tree in versions before 0.1.0, but these trees consumed a lot of memory).
 
 ## Installation
 
@@ -29,15 +30,9 @@ Segment tree consists of segments (in Ruby it's <tt>Range</tt> objects) and corr
 tree = SegmentTree.new(1..10 => "a", 11..20 => "b", 21..30 => "c") # => #<SegmentTree:0xa47eadc @root=#<SegmentTree::Container:0x523f3b6 @range=1..30>>
 ```
 
-After that you can query the tree of which segments contain a given point:
+After that you can query the tree of which segment contains a given point:
 ```ruby
-tree.find(5) # => [#<SegmentTree::Segment:0xa47ea8c @range=1..10, @value="a">]
-```
-
-Or fetch only one segment:
-```ruby
-segment = tree.find_first(5) # => #<SegmentTree::Segment:0xa47ea8c @range=1..10, @value="a">
-segment.value # => "a"
+tree.find(5) # => #<SegmentTree::Segment:0xa47ea8c @range=1..10, @value="a">
 ```
 
 ## Real world example
@@ -53,7 +48,7 @@ data = [
 ip_tree = SegmentTree.new(data)
 
 client_ip = IPAddr.new("87.224.241.66")
-ip_tree.find_first(client_ip).value # => {:city=>"YEKT"}
+ip_tree.find(client_ip).value # => {:city=>"YEKT"}
 ```
 
 ## Contributing

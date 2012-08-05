@@ -12,13 +12,13 @@ def list(n)
   (0..n).map { |num| [(num * 10)..(num + 1) * 10 - 1, num] }
 end
 
-t = tree(10_000)
-n = rand(10_000)
+t = tree(100_000)
+n = rand(100_000)
 
 RubyProf.start
-t.find_first(n)
+t.find(n)
 result = RubyProf.stop
 
 # Print a flat profile to text
-printer = RubyProf::FlatPrinterWithLineNumbers.new(result)
+printer = RubyProf::FlatPrinter.new(result)
 printer.print(STDOUT)
