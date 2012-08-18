@@ -4,4 +4,5 @@ source 'https://rubygems.org'
 gemspec
 
 gem "simplecov", "~> 0.6.4"
-gem "ruby-prof"
+
+gem "ruby-prof" if defined?(RUBY_ENGINE) && RUBY_ENGINE == "ruby"
