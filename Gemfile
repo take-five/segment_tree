@@ -3,6 +3,6 @@ source 'https://rubygems.org'
 # Specify your gem's dependencies in segment_tree.gemspec
 gemspec
 
-gem "simplecov", "~> 0.6.4"
+gem 'simplecov'
 
-gem "ruby-prof" if defined?(RUBY_ENGINE) && RUBY_ENGINE == "ruby"
+gem 'ruby-prof' if defined?(RUBY_ENGINE) && RUBY_ENGINE == 'ruby'

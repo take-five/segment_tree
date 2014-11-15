@@ -1,4 +1,4 @@
-require "bundler/setup"
+require 'bundler/setup'
 
 RSpec.configure do |config|
   # Run specs in random order to surface order dependencies. If you find an
@@ -9,8 +9,8 @@ RSpec.configure do |config|
 end
 
 if defined?(RUBY_ENGINE) &&
-    RUBY_ENGINE == "ruby" &&
-    RUBY_VERSION > "1.9"
-  require "simplecov"
+    RUBY_ENGINE == 'ruby' &&
+    RUBY_VERSION > '1.9'
+  require 'simplecov'
   SimpleCov.start
 end

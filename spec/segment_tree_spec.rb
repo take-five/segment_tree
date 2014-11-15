@@ -1,5 +1,5 @@
-require "spec_helper"
-require "segment_tree"
+require 'spec_helper'
+require 'segment_tree'
 
 # subject { tree }
 # it { should query(12).and_return("b") }
@@ -13,10 +13,10 @@ RSpec::Matchers.define :query do |key|
     result = tree.find(key)
     result &&= result.value
 
-    result.should eq @expected
+    expect(result).to eq @expected
   end
 
-  failure_message_for_should do |tree|
+  failure_message do |tree|
     result = tree.find(key)
     result &&= result.value
 
@@ -28,15 +28,15 @@ end
 describe SegmentTree do
   # some fixtures
   # [[0..9, "a"], [10..19, "b"], ..., [90..99, "j"]] - spanned intervals
-  let(:sample_spanned) { (0..9).zip("a".."j").map { |num, letter| [(num * 10)..(num + 1) * 10 - 1, letter] }.shuffle }
+  let(:sample_spanned) { (0..9).zip('a'..'j').map { |num, letter| [(num * 10)..(num + 1) * 10 - 1, letter] }.shuffle }
   # [[0..10, "a"], [10..20, "b"], ..., [90..100, "j"]] - partially overlapping intervals
-  let(:sample_overlapping) { (0..9).zip("a".."j").map { |num, letter| [(num * 10)..(num + 1) * 10 + 2, letter] }.shuffle }
+  let(:sample_overlapping) { (0..9).zip('a'..'j').map { |num, letter| [(num * 10)..(num + 1) * 10 + 2, letter] }.shuffle }
   # [[0..5, "a"], [10..15, "b"], ..., [90..95, "j"]] - sparsed intervals
-  let(:sample_sparsed) { (0..9).zip("a".."j").map { |num, letter| [(num * 10)..(num + 1) * 10 - 5, letter] }.shuffle }
+  let(:sample_sparsed) { (0..9).zip('a'..'j').map { |num, letter| [(num * 10)..(num + 1) * 10 - 5, letter] }.shuffle }
 
   # [[0..5, "a"], [0..7, "aa"], [10..15, "b"], [10..17, "bb"], ..., [90..97, "jj"]]
   let(:sample_overlapping2) do
-    (0..9).zip("a".."j").map do |num, letter|
+    (0..9).zip('a'..'j').map do |num, letter|
       [(num * 10)..(num + 1) * 10 - 5, letter,
        (num * 10)..(num + 1) * 10 - 3, letter * 2]
     end.
@@ -46,89 +46,89 @@ describe SegmentTree do
     shuffle
   end
 
-  describe ".new" do
-    context "given a hash with ranges as keys" do
+  describe '.new' do
+    context 'given a hash with ranges as keys' do
       let :data do
-        {7..9 => "a",
-         4..6 => "b",
-         0..3 => "c",
-         10..12 => "d"}
+        {7..9 => 'a',
+         4..6 => 'b',
+         0..3 => 'c',
+         10..12 => 'd'}
       end
 
       subject(:tree) { SegmentTree.new(data) }
 
-      it { should be_a SegmentTree }
+      it { is_expected.to be_a SegmentTree }
     end
 
-    context "given an array of arrays" do
+    context 'given an array of arrays' do
       let :data do
-        [[0..3, "a"],
-         [4..6, "b"],
-         [7..9, "c"],
-         [10..12, "d"]].shuffle
+        [[0..3, 'a'],
+         [4..6, 'b'],
+         [7..9, 'c'],
+         [10..12, 'd']].shuffle
       end
 
       subject(:tree) { SegmentTree.new(data) }
 
-      it { should be_a SegmentTree }
+      it { is_expected.to be_a SegmentTree }
     end
 
-    context "given preordered data" do
+    context 'given preordered data' do
       let :data do
-        [[0..3, "a"],
-         [4..6, "b"],
-         [7..9, "c"],
-         [10..12, "d"]]
+        [[0..3, 'a'],
+         [4..6, 'b'],
+         [7..9, 'c'],
+         [10..12, 'd']]
       end
 
       subject(:tree) { SegmentTree.new(data, true) }
 
-      it { should be_a SegmentTree }
-      it { should query(8).and_return("c") }
+      it { is_expected.to be_a SegmentTree }
+      it { is_expected.to query(8).and_return('c') }
     end
 
-    context "given nor hash neither array" do
+    context 'given nor hash neither array' do
       it { expect{ SegmentTree.new(Object.new) }.to raise_error(ArgumentError) }
     end
 
-    context "given 1-dimensional array" do
+    context 'given 1-dimensional array' do
       let :data do
-        [0..3, "a",
-         4..6, "b",
-         7..9, "c",
-         10..12, "d"]
+        [0..3, 'a',
+         4..6, 'b',
+         7..9, 'c',
+         10..12, 'd']
       end
 
       it { expect{ SegmentTree.new(data) }.to raise_error(ArgumentError) }
     end
   end
 
-  describe "querying" do
-    context "given spanned intervals" do
+  describe 'querying' do
+    context 'given spanned intervals' do
       subject { SegmentTree.new(sample_spanned) }
 
-      it { should query(12).and_return('b') }
-      it { should query(101).and_return(:nothing) }
+      it { is_expected.to query(12).and_return('b') }
+      it { is_expected.to query(101).and_return(:nothing) }
     end
 
-    context "given partially overlapping intervals" do
+    context 'given partially overlapping intervals' do
       subject { SegmentTree.new(sample_overlapping) }
 
-      it { should query(11).and_return('a') }
+      it { is_expected.to query(11).and_return('a') }
     end
 
-    context "given sparsed intervals" do
+    context 'given sparsed intervals' do
       subject { SegmentTree.new(sample_sparsed) }
 
-      it { should query(12).and_return('b') }
-      it { should query(8).and_return(:nothing) }
+      it { is_expected.to query(12).and_return('b') }
+      it { is_expected.to query(8).and_return(:nothing) }
     end
 
-    context "given hardly overlapping intervals" do
+    context 'given hardly overlapping intervals' do
       subject { SegmentTree.new(sample_overlapping2) }
 
-      it { should query(12).and_return('b') }
-      it { should query(8).and_return(:nothing) }
+      it { is_expected.to query(12).and_return('b') }
+      it { is_expected.to query(8).and_return(:nothing) }
     end
   end
 end
