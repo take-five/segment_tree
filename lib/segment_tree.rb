@@ -91,9 +91,9 @@ class SegmentTree
     right     = idx < @segments.size - 1 && @segments[idx + 1]
 
     case
-      when left && (low.range.begin..left.range.end).include?(x) then -1
-      when segment.range.include?(x) then 0
-      when right && (right.range.begin..high.range.end).include?(x) then 1
+      when left && low.range.begin <= x && x <= left.range.end then -1
+      when segment.range.begin <=x && x <= segment.range.end then 0
+      when right && right.range.begin <=x && x <= high.range.end then 1
       else nil
     end
   end
