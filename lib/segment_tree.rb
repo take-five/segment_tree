@@ -59,12 +59,11 @@ class SegmentTree
     high = @segments.size - 1
     while low <= high
       mid = (low + high) / 2
-
-      case matches?(x, low, high, mid)
+      case matches?(x, low, mid, high)
         when -1 then high = mid - 1
-        when 1 then low = mid + 1
-        when 0 then return @segments[mid]
-        else return nil
+        when  1 then low  = mid + 1
+        when  0 then return @segments[mid]
+        else         return nil
       end
     end
     nil
@@ -79,17 +78,9 @@ class SegmentTree
   end
 
   private
-  def matches?(x, low_idx, high_idx, idx) #:nodoc:
-    low, high = @segments[low_idx], @segments[high_idx]
-    segment   = @segments[idx]
-    left      = idx > 0 && @segments[idx - 1]
-    right     = idx < @segments.size - 1 && @segments[idx + 1]
-
-    case
-      when left && low.range.begin <= x && x <= left.range.end then -1
-      when segment.range.begin <=x && x <= segment.range.end then 0
-      when right && right.range.begin <=x && x <= high.range.end then 1
-      else nil
-    end
+  def matches?(x, low_idx, idx, high_idx) #:nodoc:
+    return -1 if idx > low_idx  && @segments[low_idx].range.begin <= x && x <= @segments[idx - 1 ].range.end
+    return  0 if                   @segments[idx    ].range.begin <= x && x <= @segments[idx     ].range.end
+    return  1 if idx < high_idx && @segments[idx + 1].range.begin <= x && x <= @segments[high_idx].range.end
   end
 end
