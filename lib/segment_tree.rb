@@ -47,13 +47,8 @@ class SegmentTree
   # Use it at your own risk!
   def initialize(data, sorted = false)
     # build elementary segments
-    @segments = case data
-      when Hash, Array, Enumerable then
-        data.collect { |range, value| Segment.new(range, value) }
-      else raise ArgumentError, '2-dim Array or Hash expected'
-    end
-
-    @segments.sort! unless sorted
+    raise ArgumentError, '2-dim Array or Hash expected' unless data.respond_to?('collect')
+    @segments = data.collect { |range, value| Segment.new(range, value) }.sort!
   end
 
   # Find first interval containing point +x+.
