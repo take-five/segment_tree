@@ -131,4 +131,65 @@ describe SegmentTree do
       it { is_expected.to query(8).and_return(:nothing) }
     end
   end
+
+  describe '#==' do
+    subject { SegmentTree.new(sample_overlapping) }
+
+    it { is_expected.to eq(SegmentTree.new(sample_overlapping)) }
+    it { is_expected.not_to eq(SegmentTree.new(sample_overlapping2)) }
+
+    it 'is equal when a range coerces' do
+      expect(SegmentTree.new((1..2) => "a")).to eq(SegmentTree.new(((1.0)..(2.0)) => "a"))
+    end
+
+    it 'is equal when a value coerces' do
+      expect(SegmentTree.new((1..2) => 1)).to eq(SegmentTree.new((1..2) => 1.0))
+    end
+
+    it "isn't equal when only a range is different" do
+      expect(SegmentTree.new((1..2) => "a")).not_to eq(SegmentTree.new((1..3) => "a"))
+    end
+
+    it "isn't equal when only a value is different" do
+      expect(SegmentTree.new((1..2) => "a")).not_to eq(SegmentTree.new((1..2) => "b"))
+    end
+  end
+
+  describe '#eql?' do
+    subject { SegmentTree.new(sample_overlapping) }
+
+    it { is_expected.to be_eql(SegmentTree.new(sample_overlapping)) }
+    it { is_expected.not_to be_eql(SegmentTree.new(sample_overlapping2)) }
+
+    it "isn't equal when a range coerces" do
+      expect(SegmentTree.new((1..2) => "a")).not_to be_eql(SegmentTree.new(((1.0)..(2.0)) => "a"))
+    end
+
+    it "isn't equal when a value coerces" do
+      expect(SegmentTree.new((1..2) => 1)).not_to be_eql(SegmentTree.new((1..2) => 1.0))
+    end
+
+    it "isn't equal when only a range is different" do
+      expect(SegmentTree.new((1..2) => "a")).not_to be_eql(SegmentTree.new((1..3) => "a"))
+    end
+
+    it "isn't equal when only a value is different" do
+      expect(SegmentTree.new((1..2) => "a")).not_to be_eql(SegmentTree.new((1..2) => "b"))
+    end
+  end
+
+  describe '#hash' do
+    subject { SegmentTree.new(sample_overlapping).hash }
+
+    it { is_expected.to eq(SegmentTree.new(sample_overlapping).hash) }
+    it { is_expected.not_to eq(SegmentTree.new(sample_overlapping2).hash) }
+
+    it "isn't equal when only a range is different" do
+      expect(SegmentTree.new((1..2) => "a").hash).not_to eq(SegmentTree.new((1..3) => "a").hash)
+    end
+
+    it "isn't equal when only a value is different" do
+      expect(SegmentTree.new((1..2) => "a").hash).not_to eq(SegmentTree.new((1..2) => "b").hash)
+    end
+  end
 end

@@ -31,7 +31,25 @@ class SegmentTree
         else cmp
       end
     end
+
+    def ==(other)
+      other.is_a?(self.class) &&
+        @range == other.range &&
+        @value == other.value
+    end
+
+    def eql?(other)
+      other.is_a?(self.class) &&
+        @range.eql?(other.range) &&
+        @value.eql?(other.value)
+    end
+
+    def hash
+      [@range, @value].hash
+    end
   end
+
+  attr_reader :segments
 
   # Build a segment tree from +data+.
   #
@@ -81,6 +99,18 @@ class SegmentTree
     else
       "SegmentTree(empty)"
     end
+  end
+
+  def ==(other)
+    other.is_a?(self.class) && @segments == other.segments
+  end
+
+  def eql?(other)
+    other.is_a?(self.class) && @segments.eql?(other.segments)
+  end
+
+  def hash
+    @segments.hash
   end
 
   private
