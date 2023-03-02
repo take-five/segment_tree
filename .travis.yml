@@ -1,8 +1,7 @@
 language: ruby
 rvm:
-  - 1.9.3
-  - 2.0.0
-  - jruby-19mode
+  - 2.7.5
+  - 3.0.4
 before_install: gem install bundler
 script: "bundle exec rake spec"
 notifications:
