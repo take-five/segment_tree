@@ -47,6 +47,18 @@ class SegmentTree
     def hash
       [@range, @value].hash
     end
+
+    def marshal_dump
+      {
+        range: @range,
+        value: @value,
+      }
+    end
+
+    def marshal_load(serialized_tree)
+      @range = serialized_tree[:range]
+      @value = serialized_tree[:value]
+    end
   end
 
   attr_reader :segments
@@ -111,6 +123,16 @@ class SegmentTree
 
   def hash
     @segments.hash
+  end
+
+  def marshal_dump
+    {
+      segments: @segments,
+    }
+  end
+
+  def marshal_load(serialized_tree)
+    @segments = serialized_tree[:segments]
   end
 
   private

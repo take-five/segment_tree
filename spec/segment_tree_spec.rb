@@ -192,4 +192,21 @@ describe SegmentTree do
       expect(SegmentTree.new((1..2) => "a").hash).not_to eq(SegmentTree.new((1..2) => "b").hash)
     end
   end
+
+  describe 'marshaling' do
+    it 'dumps and loads successfully' do
+      aggregate_failures do
+        [
+          sample_spanned,
+          sample_sparsed,
+          sample_overlapping,
+          sample_overlapping2,
+        ].each do |sample|
+          tree = SegmentTree.new(sample)
+          dumped = Marshal.dump(tree)
+          expect(Marshal.load(dumped)).to eq(tree)
+        end
+      end
+    end
+  end
 end
