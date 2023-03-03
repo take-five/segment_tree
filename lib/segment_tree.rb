@@ -31,7 +31,37 @@ class SegmentTree
         else cmp
       end
     end
+
+    def ==(other)
+      other.is_a?(self.class) &&
+        @range == other.range &&
+        @value == other.value
+    end
+
+    def eql?(other)
+      other.is_a?(self.class) &&
+        @range.eql?(other.range) &&
+        @value.eql?(other.value)
+    end
+
+    def hash
+      [@range, @value].hash
+    end
+
+    def marshal_dump
+      {
+        range: @range,
+        value: @value,
+      }
+    end
+
+    def marshal_load(serialized_tree)
+      @range = serialized_tree[:range]
+      @value = serialized_tree[:value]
+    end
   end
+
+  attr_reader :segments
 
   # Build a segment tree from +data+.
   #
@@ -81,6 +111,28 @@ class SegmentTree
     else
       "SegmentTree(empty)"
     end
+  end
+
+  def ==(other)
+    other.is_a?(self.class) && @segments == other.segments
+  end
+
+  def eql?(other)
+    other.is_a?(self.class) && @segments.eql?(other.segments)
+  end
+
+  def hash
+    @segments.hash
+  end
+
+  def marshal_dump
+    {
+      segments: @segments,
+    }
+  end
+
+  def marshal_load(serialized_tree)
+    @segments = serialized_tree[:segments]
   end
 
   private
