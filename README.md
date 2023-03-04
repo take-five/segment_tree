@@ -1,4 +1,4 @@
-# SegmentTree [![Build Status](https://secure.travis-ci.org/take-five/segment_tree.png?branch=master)](http://travis-ci.org/take-five/segment_tree)
+# SegmentTree [![Build Status](https://github.com/take-five/segment_tree/actions/workflows/ruby.yml/badge.svg?branch=master)](https://github.com/take-five/segment_tree/actions/workflows/ruby.yml)
 
 Ruby implementation of [segment tree](http://en.wikipedia.org/wiki/Segment_tree) data structure.
 Segment tree is a tree data structure for storing intervals, or segments. It allows querying which of the stored segments contain a given point. It is, in principle, a static structure; that is, its content cannot be modified once the structure is built.
